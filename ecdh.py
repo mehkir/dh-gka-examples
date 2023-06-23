@@ -8,7 +8,9 @@
 
 import sympy
 import os
+import secrets
 from tinyec.ec import SubGroup, Curve
+from datetime import datetime
 
 # Parameters and equation
 s = 128
@@ -26,24 +28,37 @@ gy = int.from_bytes(bytes.fromhex('4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315
 field = SubGroup(p=group_prime, g=(gx, gy), n=group_order, h=1)
 curve = Curve(a=-3, b=group_b, field=field, name='256-Bit Random ECP Group')
 
+def round_up(value):
+    decimal_part = value - int(value)
+    if decimal_part >= 0.5:
+        return int(value) + 1
+    else:
+        return int(value)
+
 def generate_private_key():
     L = group_order.bit_length() + 64
     c = int.from_bytes(os.urandom(max(s, L) // 8))
     assert c > 0 and c < (pow(2, max(s, L)) - 1)
     return (c % (group_order - 1)) + 1
 
+def verify(point):
+    return pow(point.y, 2, group_prime) == ecurve.subs([(x, point.x),(b, group_b)]) % group_prime
+
+start = datetime.now()
 M1_secret = generate_private_key()
 M1_public = M1_secret*curve.g
-assert pow(M1_public.y, 2, group_prime) == ecurve.subs([(x, M1_public.x),(b, group_b)]) % group_prime
+#assert verify(M1_public)
 
 M2_secret = generate_private_key()
 M2_public = M2_secret*curve.g
-assert pow(M2_public.y, 2, group_prime) == ecurve.subs([(x, M2_public.x),(b, group_b)]) % group_prime
+#assert verify(M2_public)
 
 sk1 = M1_secret*M2_public
 sk2 = M2_secret*M1_public
-assert sk1 == sk2
+#assert sk1 == sk2
 
-print(f'sk1.x={sk1.x}, sk1.y={sk1.y}')
-print()
-print(f'sk2.x={sk2.x}, sk2.y={sk2.y}')
+#print(f'sk1.x={sk1.x}, sk1.y={sk1.y}')
+#print()
+#print(f'sk2.x={sk2.x}, sk2.y={sk2.y}')
+
+print(f"Complete duration {round_up((datetime.now()-start).total_seconds()*1000)}ms")

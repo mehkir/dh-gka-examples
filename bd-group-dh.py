@@ -8,7 +8,7 @@ import sympy
 def round_up(value):
     decimal_part = value - int(value)
     if decimal_part >= 0.5:
-        return int(value - decimal_part + 1)
+        return int(value) + 1
     else:
         return int(value)
 
