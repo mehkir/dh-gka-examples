@@ -1,5 +1,4 @@
 import mpmath
-import sympy
 
 # A.1.  ffdhe2048 for TLS FFC
 # The 2048-bit group has registry value 256 and is calculated from the following formula:
