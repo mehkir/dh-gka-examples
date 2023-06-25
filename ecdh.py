@@ -8,7 +8,6 @@
 
 import sympy
 import os
-import secrets
 from tinyec.ec import SubGroup, Curve
 from datetime import datetime
 
