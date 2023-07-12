@@ -40,26 +40,26 @@ if __name__ == "__main__":
     k1  = M1_r1
     bk1 = M1_br1
     k2  = pow(M2_br2, M1_r1, p)
-    bk2 = pow(g, k2, p)
     k3  = pow(M3_br3, k2, p)
-    bk3 = pow(g, k3, p)
     k4  = pow(M4_br4, k3, p)
-    bk4 = pow(g, k4, p)
     group_key = k4
 
     # M2 computes:
     k2 = pow(bk1, M2_r2, p)
+    bk2 = pow(g, k2, p)
     k3 = pow(M3_br3, k2, p)
     k4 = pow(M4_br4, k3, p)
     assert k4 == group_key
 
     # M3 computes:
     k3 = pow(bk2, M3_r3, p)
+    bk3 = pow(g, k3, p)
     k4 = pow(M4_br4, k3, p)
     assert k4 == group_key
 
     # M4 computes:
     k4 = pow(bk3, M4_r4, p)
+    bk4 = pow(g, k4, p)
     assert k4 == group_key
 
     #checkpoint3 = datetime.now()
